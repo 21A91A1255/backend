@@ -37,12 +37,9 @@ jobs:
       - name: Delete old container (if exists)
         run: docker rm -f nodejs-container || true
       - name: Run Docker container
-        run: |
-          docker run -d -p 8080:80 \
-          --name nodejs-container \
-          -e PORT=8080 \
-          -e DEV_MODE=development \
-          -e MONGO_URL=${{ secrets.MONGO_URL }} \
-          sainarendra2003/node.js:latest
+        run: 
+           docker run -d -p 8080:8080 --name nodejs-container -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' PORT='8080' DEV_MODE='development'  MONGO_URL='${{secrets.MONGO_URL}}' sainarendra2003/node.js
+      
+  
 
 
