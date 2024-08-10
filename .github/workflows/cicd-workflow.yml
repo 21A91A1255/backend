@@ -39,7 +39,7 @@ jobs:
       
       - name: Run Docker container
         run: |
-          docker run -d -p 8080:8080 \
+          docker run -d -p 8080:80 \
           --name nodejs-container \
           -e PORT=8080 \
           -e DEV_MODE=development \
