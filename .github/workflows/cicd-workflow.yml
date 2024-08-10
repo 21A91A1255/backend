@@ -6,15 +6,18 @@ on:
 
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-      - name: Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
-      - name: Build docker image
+      
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      
+      - name: Build Docker image
         run: docker build -t sainarendra2003/node.js .
-      - name: Publish image to docker hub
+      
+      - name: Publish image to Docker Hub
         run: docker push sainarendra2003/node.js:latest
         
   deploy:
@@ -27,9 +30,18 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y docker.io
           fi
-      - name: Pull image from docker hub
+      
+      - name: Pull image from Docker Hub
         run: docker pull sainarendra2003/node.js:latest
-      - name: Delete old container
-        run: docker rm -f nodejs-app-container
-      - name: Run docker container
-        run: docker run -d -p 8080:8080 --name nodejs-container -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' sainarendra2003/node.js
+      
+      - name: Delete old container (if exists)
+        run: docker rm -f nodejs-container || true
+      
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8080:8080 \
+          --name nodejs-container \
+          -e PORT=8080 \
+          -e DEV_MODE=development \
+          -e MONGO_URL=${{ secrets.MONGO_URL }} \
+          sainarendra2003/node.js:latest
