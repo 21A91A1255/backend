@@ -32,4 +32,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f nodejs-app-container
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name nodejs-container sainarendra2003/node.js
+        run: docker run -d -p 8080:8080 --name nodejs-container -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' sainarendra2003/node.js
